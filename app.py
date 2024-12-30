@@ -184,29 +184,75 @@ if uploaded_file_1 and uploaded_file_2:
             })
         return metrics
     
-    # Function to visualize a network with modules
-    def visualize_network_with_modules(graph, communities, module_selection=None):
-        pos = nx.spring_layout(graph, seed=42)
-        colors = plt.cm.tab10.colors
-        color_mapping = {i: colors[i % len(colors)] for i in range(len(communities))}
+    # # Function to visualize a network with modules
+    # def visualize_network_with_modules(graph, communities, module_selection=None):
+    #     pos = nx.spring_layout(graph, seed=42)
+    #     colors = plt.cm.tab10.colors
+    #     color_mapping = {i: colors[i % len(colors)] for i in range(len(communities))}
     
-        plt.figure(figsize=(10, 7))
-        for i, module in enumerate(communities):
-            if module_selection is None or i + 1 in module_selection:
-                nx.draw_networkx_nodes(
-                    graph,
-                    pos,
-                    nodelist=module,
-                    node_color=[color_mapping[i]],
-                    label=f"Module {i + 1}",
-                    node_size=50
-                )
+    #     plt.figure(figsize=(10, 7))
+    #     for i, module in enumerate(communities):
+    #         if module_selection is None or i + 1 in module_selection:
+    #             nx.draw_networkx_nodes(
+    #                 graph,
+    #                 pos,
+    #                 nodelist=module,
+    #                 node_color=[color_mapping[i]],
+    #                 label=f"Module {i + 1}",
+    #                 node_size=50
+    #             )
     
-        nx.draw_networkx_edges(graph, pos, alpha=0.5)
-        plt.legend(loc="best")
-        plt.title("Network Visualization with Modules")
-        plt.axis("off")
-        st.pyplot(plt)
+    #     nx.draw_networkx_edges(graph, pos, alpha=0.5)
+    #     plt.legend(loc="best")
+    #     plt.title("Network Visualization with Modules")
+    #     plt.axis("off")
+    #     st.pyplot(plt)
+
+    def visualize_network_with_modules(graph, module_attribute="module", selected_modules=None):
+        """
+        Visualizes a network, allowing for module filtering and interactive taxa name display.
+    
+        Parameters:
+        - graph (networkx.Graph): The input graph.
+        - module_attribute (str): The node attribute representing the module assignment.
+        - selected_modules (list of int): The list of module IDs to include. If None, include all modules.
+    
+        Returns:
+        - Pyvis network HTML file path
+        """
+        from pyvis.network import Network
+        
+        # Initialize Pyvis network
+        net = Network(height="700px", width="100%", bgcolor="#ffffff", font_color="black")
+        net.toggle_physics(True)  # Enable physics
+        
+        # Filter nodes and edges based on selected modules
+        if selected_modules is not None:
+            filtered_nodes = [node for node, data in graph.nodes(data=True) if data.get(module_attribute) in selected_modules]
+            filtered_edges = [
+                (u, v, data) for u, v, data in graph.edges(data=True) if u in filtered_nodes and v in filtered_nodes
+            ]
+        else:
+            filtered_nodes = list(graph.nodes)
+            filtered_edges = list(graph.edges(data=True))
+        
+        # Add filtered nodes to the Pyvis network
+        for node in filtered_nodes:
+            data = graph.nodes[node]
+            taxa_name = data.get("name", str(node))  # Get node name or fallback to node ID
+            module_id = data.get(module_attribute, "Unknown")  # Get module ID
+            net.add_node(node, label=taxa_name, title=f"Taxa: {taxa_name}<br>Module: {module_id}")
+        
+        # Add filtered edges to the Pyvis network
+        for u, v, data in filtered_edges:
+            weight = data.get("weight", 0)  # Default to 0 if weight attribute not available
+            net.add_edge(u, v, value=weight)
+        
+        # Save visualization as an HTML file
+        html_file = "/tmp/module_filtered_network.html"
+        net.save_graph(html_file)
+        return html_file
+
     
     # Module statistics and visualizations for Network 1
     st.subheader("Module Statistics and Visualization for Network 1")
@@ -227,7 +273,18 @@ if uploaded_file_1 and uploaded_file_2:
         options=range(1, num_modules1 + 1),
         default=[1]  # Default to the largest module
     )
-    visualize_network_with_modules(G1, communities1, module_selection=selected_modules1)
+    # selected_modules = st.sidebar.multiselect(
+    #     "Select Modules to Visualize:",
+    #     options=list(set(nx.get_node_attributes(G1, "module").values())),
+    #     default=[]
+    # )
+    
+    # visualize_network_with_modules(G1, communities1, module_selection=selected_modules1)
+    if selected_modules:
+        html_file1 = visualize_network_with_modules(G1, selected_modules=selected_modules)
+        st.components.v1.html(open(html_file1, "r").read(), height=750)
+    else:
+        st.write("Please select at least one module to visualize.")
     
     # Module statistics and visualizations for Network 2
     st.subheader("Module Statistics and Visualization for Network 2")
@@ -250,74 +307,74 @@ if uploaded_file_1 and uploaded_file_2:
     )
     visualize_network_with_modules(G2, communities2, module_selection=selected_modules2)
 
-    from pyvis.network import Network
-    import networkx as nx
+    # from pyvis.network import Network
+    # import networkx as nx
     
-    # Function to create a filtered graph
-    def create_filtered_graph(graph, degree_threshold, edge_weight_range):
-        # Filter nodes by degree
-        filtered_nodes = [node for node in graph.nodes if graph.degree[node] >= degree_threshold]
+    # # Function to create a filtered graph
+    # def create_filtered_graph(graph, degree_threshold, edge_weight_range):
+    #     # Filter nodes by degree
+    #     filtered_nodes = [node for node in graph.nodes if graph.degree[node] >= degree_threshold]
     
-        # Create a subgraph with filtered nodes
-        filtered_graph = graph.subgraph(filtered_nodes).copy()
+    #     # Create a subgraph with filtered nodes
+    #     filtered_graph = graph.subgraph(filtered_nodes).copy()
     
-        # Filter edges by weight
-        filtered_edges = [
-            (u, v) for u, v, data in filtered_graph.edges(data=True)
-            if edge_weight_range[0] <= data.get("weight", 0) <= edge_weight_range[1]
-        ]
-        filtered_graph = nx.Graph(filtered_graph.edge_subgraph(filtered_edges))
+    #     # Filter edges by weight
+    #     filtered_edges = [
+    #         (u, v) for u, v, data in filtered_graph.edges(data=True)
+    #         if edge_weight_range[0] <= data.get("weight", 0) <= edge_weight_range[1]
+    #     ]
+    #     filtered_graph = nx.Graph(filtered_graph.edge_subgraph(filtered_edges))
     
-        return filtered_graph
+    #     return filtered_graph
     
-    # Function to generate an interactive network with Pyvis
-    def visualize_interactive_network(graph, title="Network Visualization"):
-        # Initialize a Pyvis network
-        net = Network(
-            notebook=False, 
-            height="700px", 
-            width="100%", 
-            bgcolor="#ffffff", 
-            font_color="black"
-        )
+    # # Function to generate an interactive network with Pyvis
+    # def visualize_interactive_network(graph, title="Network Visualization"):
+    #     # Initialize a Pyvis network
+    #     net = Network(
+    #         notebook=False, 
+    #         height="700px", 
+    #         width="100%", 
+    #         bgcolor="#ffffff", 
+    #         font_color="black"
+    #     )
         
-        # Add nodes to Pyvis network with attributes
-        for node, data in graph.nodes(data=True):
-            node_name = data.get("name", str(node))  # Get 'name' or fallback to node ID
-            net.add_node(node, label=node_name, title=node_name)
+    #     # Add nodes to Pyvis network with attributes
+    #     for node, data in graph.nodes(data=True):
+    #         node_name = data.get("name", str(node))  # Get 'name' or fallback to node ID
+    #         net.add_node(node, label=node_name, title=node_name)
         
-        # Add edges to Pyvis network
-        for u, v, edge_data in graph.edges(data=True):
-            weight = edge_data.get("weight", 0)  # Default weight to 0 if not present
-            net.add_edge(u, v, value=weight)  # Add value for edge weight visualization
+    #     # Add edges to Pyvis network
+    #     for u, v, edge_data in graph.edges(data=True):
+    #         weight = edge_data.get("weight", 0)  # Default weight to 0 if not present
+    #         net.add_edge(u, v, value=weight)  # Add value for edge weight visualization
         
-        # Enable physics for better layout
-        net.toggle_physics(True)
+    #     # Enable physics for better layout
+    #     net.toggle_physics(True)
         
-        # Save the interactive visualization as HTML
-        html_file = "/tmp/interactive_network.html"
-        net.save_graph(html_file)
-        return html_file
+    #     # Save the interactive visualization as HTML
+    #     html_file = "/tmp/interactive_network.html"
+    #     net.save_graph(html_file)
+    #     return html_file
 
 
-    # Streamlit App
-    st.title("Interactive Network Comparison")
+    # # Streamlit App
+    # st.title("Interactive Network Comparison")
     
-    # Sidebar for filters
-    st.sidebar.header("Filtering Options")
-    degree_threshold = st.sidebar.slider("Minimum Node Degree", 1, 10, 1)
-    edge_weight_range = st.sidebar.slider("Edge Weight Range", -1.0, 1.0, (-1.0, 1.0))
+    # # Sidebar for filters
+    # st.sidebar.header("Filtering Options")
+    # degree_threshold = st.sidebar.slider("Minimum Node Degree", 1, 10, 1)
+    # edge_weight_range = st.sidebar.slider("Edge Weight Range", -1.0, 1.0, (-1.0, 1.0))
     
-    # Filtered graphs
-    st.subheader("Network 1")
-    filtered_G1 = create_filtered_graph(G1, degree_threshold, edge_weight_range)
-    st.write(f"Filtered Network 1: {filtered_G1.number_of_nodes()} nodes, {filtered_G1.number_of_edges()} edges")
+    # # Filtered graphs
+    # st.subheader("Network 1")
+    # filtered_G1 = create_filtered_graph(G1, degree_threshold, edge_weight_range)
+    # st.write(f"Filtered Network 1: {filtered_G1.number_of_nodes()} nodes, {filtered_G1.number_of_edges()} edges")
     
-    html_file1 = visualize_interactive_network(filtered_G1, title="Filtered Network 1")
-    st.components.v1.html(open(html_file1, "r").read(), height=750)
+    # html_file1 = visualize_interactive_network(filtered_G1, title="Filtered Network 1")
+    # st.components.v1.html(open(html_file1, "r").read(), height=750)
     
-    st.subheader("Network 2")
-    filtered_G2 = create_filtered_graph(G2, degree_threshold, edge_weight_range)
-    st.write(f"Filtered Network 2: {filtered_G2.number_of_nodes()} nodes, {filtered_G2.number_of_edges()} edges")
-    html_file2 = visualize_interactive_network(filtered_G2, title="Filtered Network 2")
-    st.components.v1.html(open(html_file2, "r").read(), height=750)
+    # st.subheader("Network 2")
+    # filtered_G2 = create_filtered_graph(G2, degree_threshold, edge_weight_range)
+    # st.write(f"Filtered Network 2: {filtered_G2.number_of_nodes()} nodes, {filtered_G2.number_of_edges()} edges")
+    # html_file2 = visualize_interactive_network(filtered_G2, title="Filtered Network 2")
+    # st.components.v1.html(open(html_file2, "r").read(), height=750)
