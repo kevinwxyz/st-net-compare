@@ -272,21 +272,33 @@ if uploaded_file_1 and uploaded_file_2:
     
     # Function to generate an interactive network with Pyvis
     def visualize_interactive_network(graph, title="Network Visualization"):
-        net = Network(notebook=False, height="700px", width="100%", bgcolor="#ffffff", font_color="black")
-        net.from_nx(graph)
-    
-        # Add node labels from attribute
-        for node in graph.nodes:
-            net.nodes[node]["title"] = graph.nodes[node].get("name", str(node))  # Use 'name' or node ID as a fallback
-            net.nodes[node]["label"] = graph.nodes[node].get("name", str(node))  # Display real names
-    
+        # Initialize a Pyvis network
+        net = Network(
+            notebook=False, 
+            height="700px", 
+            width="100%", 
+            bgcolor="#ffffff", 
+            font_color="black"
+        )
+        
+        # Add nodes to Pyvis network with attributes
+        for node, data in graph.nodes(data=True):
+            node_name = data.get("name", str(node))  # Get 'name' or fallback to node ID
+            net.add_node(node, label=node_name, title=node_name)
+        
+        # Add edges to Pyvis network
+        for u, v, edge_data in graph.edges(data=True):
+            weight = edge_data.get("weight", 0)  # Default weight to 0 if not present
+            net.add_edge(u, v, value=weight)  # Add value for edge weight visualization
+        
         # Enable physics for better layout
         net.toggle_physics(True)
-    
-        # Save visualization as an HTML file
+        
+        # Save the interactive visualization as HTML
         html_file = "/tmp/interactive_network.html"
         net.save_graph(html_file)
         return html_file
+
 
     # Streamlit App
     st.title("Interactive Network Comparison")
@@ -300,6 +312,7 @@ if uploaded_file_1 and uploaded_file_2:
     st.subheader("Network 1")
     filtered_G1 = create_filtered_graph(G1, degree_threshold, edge_weight_range)
     st.write(f"Filtered Network 1: {filtered_G1.number_of_nodes()} nodes, {filtered_G1.number_of_edges()} edges")
+    
     html_file1 = visualize_interactive_network(filtered_G1, title="Filtered Network 1")
     st.components.v1.html(open(html_file1, "r").read(), height=750)
     
