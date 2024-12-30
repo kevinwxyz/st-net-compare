@@ -269,17 +269,17 @@ if uploaded_file_1 and uploaded_file_2:
     st.dataframe(module_metrics1_df)
     # st.write(module_metrics1_sorted)
     
-    # # Interactive selection for module visualization
-    # selected_modules1 = st.multiselect(
-    #     "Select modules to visualize (Network 1):",
-    #     options=range(1, num_modules1 + 1),
-    #     default=[1]  # Default to the largest module
-    # )
-    selected_modules1 = st.sidebar.multiselect(
-        "Select Modules to Visualize:",
-        options=list(set(nx.get_node_attributes(G1, "module").values())),
-        default=[]
+    # Interactive selection for module visualization
+    selected_modules1 = st.multiselect(
+        "Select modules to visualize (Network 1):",
+        options=range(1, num_modules1 + 1),
+        default=[1]  # Default to the largest module
     )
+    # selected_modules1 = st.sidebar.multiselect(
+    #     "Select Modules to Visualize:",
+    #     options=list(set(nx.get_node_attributes(G1, "module").values())),
+    #     default=[]
+    # )
 
 
     
