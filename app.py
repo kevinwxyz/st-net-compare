@@ -215,8 +215,11 @@ if uploaded_file_1 and uploaded_file_2:
     st.write(f"Number of modules in Network 1: {num_modules1}")
     
     module_metrics1_sorted = sorted(module_metrics1, key=lambda x: -x["Nodes"])[:5]
-    st.write("Module Metrics (Top 5 Largest Modules in Network 1):")
-    st.write(module_metrics1_sorted)
+    # Convert the metrics to a DataFrame for better visualization
+    module_metrics1_df = pd.DataFrame(module_metrics1_sorted)
+    st.dataframe(module_metrics1_df)
+    # st.write("Module Metrics (Top 5 Largest Modules in Network 1):")
+    # st.write(module_metrics1_sorted)
     
     # Interactive selection for module visualization
     selected_modules1 = st.multiselect(
@@ -233,8 +236,11 @@ if uploaded_file_1 and uploaded_file_2:
     st.write(f"Number of modules in Network 2: {num_modules2}")
     
     module_metrics2_sorted = sorted(module_metrics2, key=lambda x: -x["Nodes"])[:5]
-    st.write("Module Metrics (Top 5 Largest Modules in Network 2):")
-    st.write(module_metrics2_sorted)
+    # Convert the metrics to a DataFrame for Network 2
+    module_metrics2_df = pd.DataFrame(module_metrics2_sorted)
+    st.dataframe(module_metrics2_df)
+    # st.write("Module Metrics (Top 5 Largest Modules in Network 2):")
+    # st.write(module_metrics2_sorted)
     
     # Interactive selection for module visualization
     selected_modules2 = st.multiselect(
