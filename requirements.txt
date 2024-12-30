@@ -1,5 +1,7 @@
 streamlit
 networkx
+pyvis
+numpy
 matplotlib
 seaborn
 pandas
