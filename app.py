@@ -84,20 +84,6 @@ if uploaded_file_1 and uploaded_file_2:
     st.pyplot(fig1b)
     st.pyplot(fig2b)
     
-    # Communities visualization
-    st.subheader("Community Structure")
-    fig_com, ax_com = plt.subplots(1, 2, figsize=(14, 7))
-    pos1 = nx.spring_layout(G1)  # Spring layout for G1
-    pos2 = nx.spring_layout(G2)  # Spring layout for G2
-    
-    nx.draw(G1, pos1, ax=ax_com[0], node_color=[len(c) for c in communities1], cmap='viridis', node_size=50)
-    ax_com[0].set_title("Network 1 Communities")
-    
-    nx.draw(G2, pos2, ax=ax_com[1], node_color=[len(c) for c in communities2], cmap='viridis', node_size=50)
-    ax_com[1].set_title("Network 2 Communities")
-    
-    st.pyplot(fig_com)
-    
     st.subheader("Key Insights")
     st.write("""
     - Use these plots and metrics to identify key differences between networks.
