@@ -249,4 +249,62 @@ if uploaded_file_1 and uploaded_file_2:
         default=[1]  # Default to the largest module
     )
     visualize_network_with_modules(G2, communities2, module_selection=selected_modules2)
+
+    from pyvis.network import Network
+    import networkx as nx
     
+    # Function to create a filtered graph
+    def create_filtered_graph(graph, degree_threshold, edge_weight_range):
+        # Filter nodes by degree
+        filtered_nodes = [node for node in graph.nodes if graph.degree[node] >= degree_threshold]
+    
+        # Create a subgraph with filtered nodes
+        filtered_graph = graph.subgraph(filtered_nodes).copy()
+    
+        # Filter edges by weight
+        filtered_edges = [
+            (u, v) for u, v, data in filtered_graph.edges(data=True)
+            if edge_weight_range[0] <= data.get("weight", 0) <= edge_weight_range[1]
+        ]
+        filtered_graph = nx.Graph(filtered_graph.edge_subgraph(filtered_edges))
+    
+        return filtered_graph
+    
+    # Function to generate an interactive network with Pyvis
+    def visualize_interactive_network(graph, title="Network Visualization"):
+        net = Network(notebook=False, height="700px", width="100%", bgcolor="#ffffff", font_color="black")
+        net.from_nx(graph)
+    
+        # Add node labels from attribute
+        for node in graph.nodes:
+            net.nodes[node]["title"] = graph.nodes[node].get("name", str(node))  # Use 'name' or node ID as a fallback
+            net.nodes[node]["label"] = graph.nodes[node].get("name", str(node))  # Display real names
+    
+        # Enable physics for better layout
+        net.toggle_physics(True)
+    
+        # Save visualization as an HTML file
+        html_file = "/tmp/interactive_network.html"
+        net.save_graph(html_file)
+        return html_file
+
+    # Streamlit App
+    st.title("Interactive Network Comparison")
+    
+    # Sidebar for filters
+    st.sidebar.header("Filtering Options")
+    degree_threshold = st.sidebar.slider("Minimum Node Degree", 1, 10, 1)
+    edge_weight_range = st.sidebar.slider("Edge Weight Range", -1.0, 1.0, (-1.0, 1.0))
+    
+    # Filtered graphs
+    st.subheader("Network 1")
+    filtered_G1 = create_filtered_graph(G1, degree_threshold, edge_weight_range)
+    st.write(f"Filtered Network 1: {filtered_G1.number_of_nodes()} nodes, {filtered_G1.number_of_edges()} edges")
+    html_file1 = visualize_interactive_network(filtered_G1, title="Filtered Network 1")
+    st.components.v1.html(open(html_file1, "r").read(), height=750)
+    
+    st.subheader("Network 2")
+    filtered_G2 = create_filtered_graph(G2, degree_threshold, edge_weight_range)
+    st.write(f"Filtered Network 2: {filtered_G2.number_of_nodes()} nodes, {filtered_G2.number_of_edges()} edges")
+    html_file2 = visualize_interactive_network(filtered_G2, title="Filtered Network 2")
+    st.components.v1.html(open(html_file2, "r").read(), height=750)
