@@ -280,8 +280,8 @@ if uploaded_file_1 and uploaded_file_2:
     # )
     
     # visualize_network_with_modules(G1, communities1, module_selection=selected_modules1)
-    if selected_modules:
-        html_file1 = visualize_network_with_modules(G1, selected_modules=selected_modules)
+    if selected_modules1:
+        html_file1 = visualize_network_with_modules(G1, selected_modules=selected_modules1)
         st.components.v1.html(open(html_file1, "r").read(), height=750)
     else:
         st.write("Please select at least one module to visualize.")
@@ -305,7 +305,12 @@ if uploaded_file_1 and uploaded_file_2:
         options=range(1, num_modules2 + 1),
         default=[1]  # Default to the largest module
     )
-    visualize_network_with_modules(G2, communities2, module_selection=selected_modules2)
+    # visualize_network_with_modules(G2, communities2, module_selection=selected_modules2)
+    if selected_modules2:
+        html_file1 = visualize_network_with_modules(G1, selected_modules=selected_modules2)
+        st.components.v1.html(open(html_file1, "r").read(), height=750)
+    else:
+        st.write("Please select at least one module to visualize.")
 
     # from pyvis.network import Network
     # import networkx as nx
