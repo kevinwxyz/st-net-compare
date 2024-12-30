@@ -191,8 +191,14 @@ if uploaded_file_1 and uploaded_file_2:
         color_mapping = {i: colors[i % len(colors)] for i in range(len(communities))}
     
         plt.figure(figsize=(10, 7))
+
+        # Keep track of selected nodes and valid edges
+        selected_nodes = set()
+        selected_edges = set()
+    
         for i, module in enumerate(communities):
             if module_selection is None or i + 1 in module_selection:
+                selected_nodes.update(module)
                 nx.draw_networkx_nodes(
                     graph,
                     pos,
@@ -201,8 +207,15 @@ if uploaded_file_1 and uploaded_file_2:
                     label=f"Module {i + 1}",
                     node_size=50
                 )
+                # Filter edges to ensure they remain within the selected module
+                module_edges = [
+                    (u, v) for u, v in graph.edges(module) if u in module and v in module
+                ]
+                selected_edges.update(module_edges)
     
-        nx.draw_networkx_edges(graph, pos, alpha=0.5)
+        # nx.draw_networkx_edges(graph, pos, alpha=0.5)
+        # Draw only the edges entirely within selected modules
+        nx.draw_networkx_edges(graph, pos, edgelist=list(selected_edges), alpha=0.5)
         plt.legend(loc="best")
         plt.title("Network Visualization with Modules")
         plt.axis("off")
