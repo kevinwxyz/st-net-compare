@@ -208,50 +208,86 @@ if uploaded_file_1 and uploaded_file_2:
     #     plt.axis("off")
     #     st.pyplot(plt)
 
-    def visualize_network_with_modules(graph, module_attribute="module", selected_modules=None):
-        """
-        Visualizes a network, allowing for module filtering and interactive taxa name display.
+    # def visualize_network_with_modules(graph, module_attribute="module", selected_modules=None):
+    #     """
+    #     Visualizes a network, allowing for module filtering and interactive taxa name display.
     
-        Parameters:
-        - graph (networkx.Graph): The input graph.
-        - module_attribute (str): The node attribute representing the module assignment.
-        - selected_modules (list of int): The list of module IDs to include. If None, include all modules.
+    #     Parameters:
+    #     - graph (networkx.Graph): The input graph.
+    #     - module_attribute (str): The node attribute representing the module assignment.
+    #     - selected_modules (list of int): The list of module IDs to include. If None, include all modules.
     
-        Returns:
-        - Pyvis network HTML file path
-        """
-        from pyvis.network import Network
+    #     Returns:
+    #     - Pyvis network HTML file path
+    #     """
+    #     from pyvis.network import Network
         
-        # Initialize Pyvis network
+    #     # Initialize Pyvis network
+    #     net = Network(height="700px", width="100%", bgcolor="#ffffff", font_color="black")
+    #     net.toggle_physics(True)  # Enable physics
+        
+    #     # Filter nodes and edges based on selected modules
+    #     if selected_modules is not None:
+    #         filtered_nodes = [node for node, data in graph.nodes(data=True) if data.get(module_attribute) in selected_modules]
+    #         filtered_edges = [
+    #             (u, v, data) for u, v, data in graph.edges(data=True) if u in filtered_nodes and v in filtered_nodes
+    #         ]
+    #     else:
+    #         filtered_nodes = list(graph.nodes)
+    #         filtered_edges = list(graph.edges(data=True))
+        
+    #     # Add filtered nodes to the Pyvis network
+    #     for node in filtered_nodes:
+    #         data = graph.nodes[node]
+    #         taxa_name = data.get("name", str(node))  # Get node name or fallback to node ID
+    #         module_id = data.get(module_attribute, "Unknown")  # Get module ID
+    #         net.add_node(node, label=taxa_name, title=f"Taxa: {taxa_name}<br>Module: {module_id}")
+        
+    #     # Add filtered edges to the Pyvis network
+    #     for u, v, data in filtered_edges:
+    #         weight = data.get("weight", 0)  # Default to 0 if weight attribute not available
+    #         net.add_edge(u, v, value=weight)
+        
+    #     # Save visualization as an HTML file
+    #     html_file = "/tmp/module_filtered_network.html"
+    #     net.save_graph(html_file)
+    #     return html_file
+
+    # Function to visualize a network with selected modules using the communities list
+    def visualize_network_with_modules(graph, communities, selected_modules=None):
         net = Network(height="700px", width="100%", bgcolor="#ffffff", font_color="black")
-        net.toggle_physics(True)  # Enable physics
-        
-        # Filter nodes and edges based on selected modules
-        if selected_modules is not None:
-            filtered_nodes = [node for node, data in graph.nodes(data=True) if data.get(module_attribute) in selected_modules]
+        net.toggle_physics(True)
+    
+        # Determine nodes and edges for selected modules
+        if selected_modules:
+            selected_nodes = set()
+            for i in selected_modules:
+                selected_nodes.update(communities[i - 1])  # Subtracting 1 since selected_modules is 1-indexed
+            
+            filtered_nodes = [node for node in graph.nodes if node in selected_nodes]
             filtered_edges = [
-                (u, v, data) for u, v, data in graph.edges(data=True) if u in filtered_nodes and v in filtered_nodes
+                (u, v, data) for u, v, data in graph.edges(data=True) if u in selected_nodes and v in selected_nodes
             ]
         else:
+            # If no module is selected, include all nodes and edges
             filtered_nodes = list(graph.nodes)
             filtered_edges = list(graph.edges(data=True))
         
-        # Add filtered nodes to the Pyvis network
+        # Add nodes and edges to the Pyvis network
         for node in filtered_nodes:
             data = graph.nodes[node]
-            taxa_name = data.get("name", str(node))  # Get node name or fallback to node ID
-            module_id = data.get(module_attribute, "Unknown")  # Get module ID
-            net.add_node(node, label=taxa_name, title=f"Taxa: {taxa_name}<br>Module: {module_id}")
+            taxa_name = data.get("name", str(node))
+            net.add_node(node, label=taxa_name, title=f"Taxa: {taxa_name}")
         
-        # Add filtered edges to the Pyvis network
         for u, v, data in filtered_edges:
-            weight = data.get("weight", 0)  # Default to 0 if weight attribute not available
+            weight = data.get("weight", 0)
             net.add_edge(u, v, value=weight)
-        
-        # Save visualization as an HTML file
+    
+        # Save and return the HTML file
         html_file = "/tmp/module_filtered_network.html"
         net.save_graph(html_file)
         return html_file
+
 
 
 
@@ -285,7 +321,7 @@ if uploaded_file_1 and uploaded_file_2:
     
     # visualize_network_with_modules(G1, communities1, module_selection=selected_modules1)
     if selected_modules1:
-        html_file1 = visualize_network_with_modules(G1, selected_modules=selected_modules1)
+        html_file1 = visualize_network_with_modules(G1, communities1, selected_modules=selected_modules1)
         st.components.v1.html(open(html_file1, "r").read(), height=750)
     else:
         st.write("Please select at least one module to visualize.")
