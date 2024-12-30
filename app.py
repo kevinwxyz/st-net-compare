@@ -184,76 +184,30 @@ if uploaded_file_1 and uploaded_file_2:
             })
         return metrics
     
-    # # Function to visualize a network with modules
-    # def visualize_network_with_modules(graph, communities, module_selection=None):
-    #     pos = nx.spring_layout(graph, seed=42)
-    #     colors = plt.cm.tab10.colors
-    #     color_mapping = {i: colors[i % len(colors)] for i in range(len(communities))}
+    # Function to visualize a network with modules
+    def visualize_network_with_modules(graph, communities, module_selection=None):
+        pos = nx.spring_layout(graph, seed=42)
+        colors = plt.cm.tab10.colors
+        color_mapping = {i: colors[i % len(colors)] for i in range(len(communities))}
     
-    #     plt.figure(figsize=(10, 7))
-    #     for i, module in enumerate(communities):
-    #         if module_selection is None or i + 1 in module_selection:
-    #             nx.draw_networkx_nodes(
-    #                 graph,
-    #                 pos,
-    #                 nodelist=module,
-    #                 node_color=[color_mapping[i]],
-    #                 label=f"Module {i + 1}",
-    #                 node_size=50
-    #             )
+        plt.figure(figsize=(10, 7))
+        for i, module in enumerate(communities):
+            if module_selection is None or i + 1 in module_selection:
+                nx.draw_networkx_nodes(
+                    graph,
+                    pos,
+                    nodelist=module,
+                    node_color=[color_mapping[i]],
+                    label=f"Module {i + 1}",
+                    node_size=50
+                )
     
-    #     nx.draw_networkx_edges(graph, pos, alpha=0.5)
-    #     plt.legend(loc="best")
-    #     plt.title("Network Visualization with Modules")
-    #     plt.axis("off")
-    #     st.pyplot(plt)
+        nx.draw_networkx_edges(graph, pos, alpha=0.5)
+        plt.legend(loc="best")
+        plt.title("Network Visualization with Modules")
+        plt.axis("off")
+        st.pyplot(plt)
 
-    def visualize_network_with_modules(graph, module_attribute="module", selected_modules=None):
-        """
-        Visualizes a network, allowing for module filtering and interactive taxa name display.
-    
-        Parameters:
-        - graph (networkx.Graph): The input graph.
-        - module_attribute (str): The node attribute representing the module assignment.
-        - selected_modules (list of int): The list of module IDs to include. If None, include all modules.
-    
-        Returns:
-        - Pyvis network HTML file path
-        """
-        from pyvis.network import Network
-        
-        # Initialize Pyvis network
-        net = Network(height="700px", width="100%", bgcolor="#ffffff", font_color="black")
-        net.toggle_physics(True)  # Enable physics
-        
-        # Filter nodes and edges based on selected modules
-        if selected_modules is not None:
-            filtered_nodes = [node for node, data in graph.nodes(data=True) if data.get(module_attribute) in selected_modules]
-            filtered_edges = [
-                (u, v, data) for u, v, data in graph.edges(data=True) if u in filtered_nodes and v in filtered_nodes
-            ]
-        else:
-            filtered_nodes = list(graph.nodes)
-            filtered_edges = list(graph.edges(data=True))
-        
-        # Add filtered nodes to the Pyvis network
-        for node in filtered_nodes:
-            data = graph.nodes[node]
-            taxa_name = data.get("name", str(node))  # Get node name or fallback to node ID
-            module_id = data.get(module_attribute, "Unknown")  # Get module ID
-            net.add_node(node, label=taxa_name, title=f"Taxa: {taxa_name}<br>Module: {module_id}")
-        
-        # Add filtered edges to the Pyvis network
-        for u, v, data in filtered_edges:
-            weight = data.get("weight", 0)  # Default to 0 if weight attribute not available
-            net.add_edge(u, v, value=weight)
-        
-        # Save visualization as an HTML file
-        html_file = "/tmp/module_filtered_network.html"
-        net.save_graph(html_file)
-        return html_file
-
-    
     # Module statistics and visualizations for Network 1
     st.subheader("Module Statistics and Visualization for Network 1")
     module_metrics1 = compute_module_metrics(G1, communities1)
@@ -263,8 +217,8 @@ if uploaded_file_1 and uploaded_file_2:
     module_metrics1_sorted = sorted(module_metrics1, key=lambda x: -x["Nodes"])[:5]
     # Convert the metrics to a DataFrame for better visualization
     module_metrics1_df = pd.DataFrame(module_metrics1_sorted)
+    st.write("Module Metrics (Top 5 Largest Modules in Network 1):")
     st.dataframe(module_metrics1_df)
-    # st.write("Module Metrics (Top 5 Largest Modules in Network 1):")
     # st.write(module_metrics1_sorted)
     
     # Interactive selection for module visualization
@@ -273,18 +227,8 @@ if uploaded_file_1 and uploaded_file_2:
         options=range(1, num_modules1 + 1),
         default=[1]  # Default to the largest module
     )
-    # selected_modules = st.sidebar.multiselect(
-    #     "Select Modules to Visualize:",
-    #     options=list(set(nx.get_node_attributes(G1, "module").values())),
-    #     default=[]
-    # )
     
-    # visualize_network_with_modules(G1, communities1, module_selection=selected_modules1)
-    if selected_modules1:
-        html_file1 = visualize_network_with_modules(G1, selected_modules=selected_modules1)
-        st.components.v1.html(open(html_file1, "r").read(), height=750)
-    else:
-        st.write("Please select at least one module to visualize.")
+    visualize_network_with_modules(G1, communities1, module_selection=selected_modules1)
     
     # Module statistics and visualizations for Network 2
     st.subheader("Module Statistics and Visualization for Network 2")
@@ -295,8 +239,8 @@ if uploaded_file_1 and uploaded_file_2:
     module_metrics2_sorted = sorted(module_metrics2, key=lambda x: -x["Nodes"])[:5]
     # Convert the metrics to a DataFrame for Network 2
     module_metrics2_df = pd.DataFrame(module_metrics2_sorted)
+    st.write("Module Metrics (Top 5 Largest Modules in Network 2):")
     st.dataframe(module_metrics2_df)
-    # st.write("Module Metrics (Top 5 Largest Modules in Network 2):")
     # st.write(module_metrics2_sorted)
     
     # Interactive selection for module visualization
@@ -305,12 +249,7 @@ if uploaded_file_1 and uploaded_file_2:
         options=range(1, num_modules2 + 1),
         default=[1]  # Default to the largest module
     )
-    # visualize_network_with_modules(G2, communities2, module_selection=selected_modules2)
-    if selected_modules2:
-        html_file1 = visualize_network_with_modules(G1, selected_modules=selected_modules2)
-        st.components.v1.html(open(html_file1, "r").read(), height=750)
-    else:
-        st.write("Please select at least one module to visualize.")
+    visualize_network_with_modules(G2, communities2, module_selection=selected_modules2)
 
     # from pyvis.network import Network
     # import networkx as nx
