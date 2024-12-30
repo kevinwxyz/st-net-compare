@@ -152,10 +152,3 @@ if uploaded_file_1 and uploaded_file_2:
     ax_com[1].set_title("Network 2 Communities")
     
     st.pyplot(fig_com)
-
-    
-    st.subheader("Key Insights")
-    st.write("""
-    - Compare metrics like clustering coefficients, modularity, and edge weight distributions between networks.
-    - Use plots like degree vs clustering coefficient and positive/negative weight distributions for deeper insights.
-    """)
