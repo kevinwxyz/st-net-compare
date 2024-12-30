@@ -293,37 +293,37 @@ if uploaded_file_1 and uploaded_file_2:
 
 
     
-    # Module statistics and visualizations for Network 2
-    st.subheader("Module Statistics and Visualization for Network 2")
-    module_metrics2 = compute_module_metrics(G2, communities2)
-    num_modules2 = len(communities2)
-    st.write(f"Number of modules in Network 2: {num_modules2}")
+    # # Module statistics and visualizations for Network 2
+    # st.subheader("Module Statistics and Visualization for Network 2")
+    # module_metrics2 = compute_module_metrics(G2, communities2)
+    # num_modules2 = len(communities2)
+    # st.write(f"Number of modules in Network 2: {num_modules2}")
     
-    module_metrics2_sorted = sorted(module_metrics2, key=lambda x: -x["Nodes"])[:5]
-    # Convert the metrics to a DataFrame for Network 2
-    module_metrics2_df = pd.DataFrame(module_metrics2_sorted)
-    st.write("Module Metrics (Top 5 Largest Modules in Network 2):")
-    st.dataframe(module_metrics2_df)
-    # st.write(module_metrics2_sorted)
+    # module_metrics2_sorted = sorted(module_metrics2, key=lambda x: -x["Nodes"])[:5]
+    # # Convert the metrics to a DataFrame for Network 2
+    # module_metrics2_df = pd.DataFrame(module_metrics2_sorted)
+    # st.write("Module Metrics (Top 5 Largest Modules in Network 2):")
+    # st.dataframe(module_metrics2_df)
+    # # st.write(module_metrics2_sorted)
     
-    # # Interactive selection for module visualization
-    # selected_modules2 = st.multiselect(
-    #     "Select modules to visualize (Network 2):",
-    #     options=range(1, num_modules2 + 1),
-    #     default=[1]  # Default to the largest module
+    # # # Interactive selection for module visualization
+    # # selected_modules2 = st.multiselect(
+    # #     "Select modules to visualize (Network 2):",
+    # #     options=range(1, num_modules2 + 1),
+    # #     default=[1]  # Default to the largest module
+    # # )
+    # selected_modules2 = st.sidebar.multiselect(
+    #     "Select Modules to Visualize:",
+    #     options=list(set(nx.get_node_attributes(G2, "module").values())),
+    #     default=[]
     # )
-    selected_modules2 = st.sidebar.multiselect(
-        "Select Modules to Visualize:",
-        options=list(set(nx.get_node_attributes(G2, "module").values())),
-        default=[]
-    )
 
 
 
     
-    # visualize_network_with_modules(G2, communities2, module_selection=selected_modules2)
-    if selected_modules:
-        html_file1 = visualize_network_with_modules(G2, selected_modules=selected_modules2)
-        st.components.v1.html(open(html_file1, "r").read(), height=750)
-    else:
-        st.write("Please select at least one module to visualize.")
+    # # visualize_network_with_modules(G2, communities2, module_selection=selected_modules2)
+    # if selected_modules:
+    #     html_file1 = visualize_network_with_modules(G2, selected_modules=selected_modules2)
+    #     st.components.v1.html(open(html_file1, "r").read(), height=750)
+    # else:
+    #     st.write("Please select at least one module to visualize.")
