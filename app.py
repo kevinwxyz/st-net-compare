@@ -152,3 +152,95 @@ if uploaded_file_1 and uploaded_file_2:
     ax_com[1].set_title("Network 2 Communities")
     
     st.pyplot(fig_com)
+
+    from collections import Counter
+    import matplotlib.pyplot as plt
+    import random
+    
+    # Function to compute module-specific metrics
+    def compute_module_metrics(graph, community):
+        metrics = []
+        for i, module in enumerate(community):
+            subgraph = graph.subgraph(module)
+            num_nodes = subgraph.number_of_nodes()
+            num_edges = subgraph.number_of_edges()
+            density = nx.density(subgraph)
+            avg_clustering = nx.average_clustering(subgraph)
+            
+            # Modularity for the module as a subgraph
+            if num_nodes > 1:  # Modularity isn't defined for a single node
+                partition = {node: 0 for node in subgraph.nodes()}
+                modularity = nx.algorithms.community.quality.modularity(subgraph, [set(partition.keys())])
+            else:
+                modularity = None  # Not defined
+    
+            metrics.append({
+                "Module ID": i + 1,
+                "Nodes": num_nodes,
+                "Edges": num_edges,
+                "Density": density,
+                "Avg Clustering": avg_clustering,
+                "Modularity": modularity
+            })
+        return metrics
+    
+    # Function to visualize a network with modules
+    def visualize_network_with_modules(graph, communities, module_selection=None):
+        pos = nx.spring_layout(graph, seed=42)
+        colors = plt.cm.tab10.colors
+        color_mapping = {i: colors[i % len(colors)] for i in range(len(communities))}
+    
+        plt.figure(figsize=(10, 7))
+        for i, module in enumerate(communities):
+            if module_selection is None or i + 1 in module_selection:
+                nx.draw_networkx_nodes(
+                    graph,
+                    pos,
+                    nodelist=module,
+                    node_color=[color_mapping[i]],
+                    label=f"Module {i + 1}",
+                    node_size=50
+                )
+    
+        nx.draw_networkx_edges(graph, pos, alpha=0.5)
+        plt.legend(loc="best")
+        plt.title("Network Visualization with Modules")
+        plt.axis("off")
+        st.pyplot(plt)
+    
+    # Module statistics and visualizations for Network 1
+    st.subheader("Module Statistics and Visualization for Network 1")
+    module_metrics1 = compute_module_metrics(G1, communities1)
+    num_modules1 = len(communities1)
+    st.write(f"Number of modules in Network 1: {num_modules1}")
+    
+    module_metrics1_sorted = sorted(module_metrics1, key=lambda x: -x["Nodes"])[:5]
+    st.write("Module Metrics (Top 5 Largest Modules in Network 1):")
+    st.write(module_metrics1_sorted)
+    
+    # Interactive selection for module visualization
+    selected_modules1 = st.multiselect(
+        "Select modules to visualize (Network 1):",
+        options=range(1, num_modules1 + 1),
+        default=[1]  # Default to the largest module
+    )
+    visualize_network_with_modules(G1, communities1, module_selection=selected_modules1)
+    
+    # Module statistics and visualizations for Network 2
+    st.subheader("Module Statistics and Visualization for Network 2")
+    module_metrics2 = compute_module_metrics(G2, communities2)
+    num_modules2 = len(communities2)
+    st.write(f"Number of modules in Network 2: {num_modules2}")
+    
+    module_metrics2_sorted = sorted(module_metrics2, key=lambda x: -x["Nodes"])[:5]
+    st.write("Module Metrics (Top 5 Largest Modules in Network 2):")
+    st.write(module_metrics2_sorted)
+    
+    # Interactive selection for module visualization
+    selected_modules2 = st.multiselect(
+        "Select modules to visualize (Network 2):",
+        options=range(1, num_modules2 + 1),
+        default=[1]  # Default to the largest module
+    )
+    visualize_network_with_modules(G2, communities2, module_selection=selected_modules2)
+    
