@@ -58,8 +58,8 @@ def plot_positive_vs_negative_histogram(weights):
     fig, ax = plt.subplots(figsize=(8, 6))
     
     # Plot histograms with consistent bin width
-    ax.hist(negative_weights, bins=neg_bins, alpha=0.7, color='red', label="Negative Weights")
-    ax.hist(positive_weights, bins=pos_bins, alpha=0.7, color='green', label="Positive Weights")
+    ax.hist(negative_weights, bins=neg_bins, alpha=0.7, color='red', label="Negative Weights", density = True)
+    ax.hist(positive_weights, bins=pos_bins, alpha=0.7, color='green', label="Positive Weights", density = True)
 
     # Add kernel density estimation
     sns.kdeplot(weights, label="Weights KDE", ax=ax, linewidth=1.5)
