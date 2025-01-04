@@ -121,37 +121,37 @@ if uploaded_file_1 and uploaded_file_2:
     st.write("Network 2")
     st.pyplot(fig_pos_neg_2)
     
-    # Communities visualization
-    st.subheader("Community Structure")
+    # # Communities visualization
+    # st.subheader("Community Structure")
     
-    def get_node_colors_from_communities(communities, G):
-        # Create a dictionary mapping each node to its community index
-        community_dict = {}
-        for i, community in enumerate(communities):
-            for node in community:
-                community_dict[node] = i
+    # def get_node_colors_from_communities(communities, G):
+    #     # Create a dictionary mapping each node to its community index
+    #     community_dict = {}
+    #     for i, community in enumerate(communities):
+    #         for node in community:
+    #             community_dict[node] = i
         
-        # Assign a color index to each node based on its community
-        node_colors = [community_dict[node] for node in G.nodes()]
-        return node_colors
+    #     # Assign a color index to each node based on its community
+    #     node_colors = [community_dict[node] for node in G.nodes()]
+    #     return node_colors
     
-    # Get node colors for both networks
-    node_colors1 = get_node_colors_from_communities(communities1, G1)
-    node_colors2 = get_node_colors_from_communities(communities2, G2)
+    # # Get node colors for both networks
+    # node_colors1 = get_node_colors_from_communities(communities1, G1)
+    # node_colors2 = get_node_colors_from_communities(communities2, G2)
     
-    fig_com, ax_com = plt.subplots(1, 2, figsize=(14, 7))
-    pos1 = nx.spring_layout(G1)  # Spring layout for G1
-    pos2 = nx.spring_layout(G2)  # Spring layout for G2
+    # fig_com, ax_com = plt.subplots(1, 2, figsize=(14, 7))
+    # pos1 = nx.spring_layout(G1)  # Spring layout for G1
+    # pos2 = nx.spring_layout(G2)  # Spring layout for G2
     
-    # Draw Network 1 with community-based coloring
-    nx.draw(G1, pos1, ax=ax_com[0], node_color=node_colors1, cmap='viridis', node_size=50)
-    ax_com[0].set_title("Network 1 Communities")
+    # # Draw Network 1 with community-based coloring
+    # nx.draw(G1, pos1, ax=ax_com[0], node_color=node_colors1, cmap='viridis', node_size=50)
+    # ax_com[0].set_title("Network 1 Communities")
     
-    # Draw Network 2 with community-based coloring
-    nx.draw(G2, pos2, ax=ax_com[1], node_color=node_colors2, cmap='viridis', node_size=50)
-    ax_com[1].set_title("Network 2 Communities")
+    # # Draw Network 2 with community-based coloring
+    # nx.draw(G2, pos2, ax=ax_com[1], node_color=node_colors2, cmap='viridis', node_size=50)
+    # ax_com[1].set_title("Network 2 Communities")
     
-    st.pyplot(fig_com)
+    # st.pyplot(fig_com)
 
     from collections import Counter
     import matplotlib.pyplot as plt
@@ -184,42 +184,42 @@ if uploaded_file_1 and uploaded_file_2:
             })
         return metrics
     
-    # # Function to visualize a network with modules
-    # def visualize_network_with_modules(graph, communities, module_selection=None):
-    #     pos = nx.spring_layout(graph, seed=42)
-    #     colors = plt.cm.tab10.colors
-    #     color_mapping = {i: colors[i % len(colors)] for i in range(len(communities))}
+    # Function to visualize a network with modules
+    def visualize_network_with_modules(graph, communities, module_selection=None):
+        pos = nx.spring_layout(graph, seed=42)
+        colors = plt.cm.tab10.colors
+        color_mapping = {i: colors[i % len(colors)] for i in range(len(communities))}
     
-    #     plt.figure(figsize=(10, 7))
+        plt.figure(figsize=(10, 7))
 
-    #     # Keep track of selected nodes and valid edges
-    #     selected_nodes = set()
-    #     selected_edges = set()
+        # Keep track of selected nodes and valid edges
+        selected_nodes = set()
+        selected_edges = set()
     
-    #     for i, module in enumerate(communities):
-    #         if module_selection is None or i + 1 in module_selection:
-    #             selected_nodes.update(module)
-    #             nx.draw_networkx_nodes(
-    #                 graph,
-    #                 pos,
-    #                 nodelist=module,
-    #                 node_color=[color_mapping[i]],
-    #                 label=f"Module {i + 1}",
-    #                 node_size=50
-    #             )
-    #             # Filter edges to ensure they remain within the selected module
-    #             module_edges = [
-    #                 (u, v) for u, v in graph.edges(module) if u in module and v in module
-    #             ]
-    #             selected_edges.update(module_edges)
+        for i, module in enumerate(communities):
+            if module_selection is None or i + 1 in module_selection:
+                selected_nodes.update(module)
+                nx.draw_networkx_nodes(
+                    graph,
+                    pos,
+                    nodelist=module,
+                    node_color=[color_mapping[i]],
+                    label=f"Module {i + 1}",
+                    node_size=50
+                )
+                # Filter edges to ensure they remain within the selected module
+                module_edges = [
+                    (u, v) for u, v in graph.edges(module) if u in module and v in module
+                ]
+                selected_edges.update(module_edges)
     
-    #     # nx.draw_networkx_edges(graph, pos, alpha=0.5)
-    #     # Draw only the edges entirely within selected modules
-    #     nx.draw_networkx_edges(graph, pos, edgelist=list(selected_edges), alpha=0.5)
-    #     plt.legend(loc="best")
-    #     plt.title("Network Visualization with Modules")
-    #     plt.axis("off")
-    #     st.pyplot(plt)
+        # nx.draw_networkx_edges(graph, pos, alpha=0.5)
+        # Draw only the edges entirely within selected modules
+        nx.draw_networkx_edges(graph, pos, edgelist=list(selected_edges), alpha=0.5)
+        plt.legend(loc="best")
+        plt.title("Network Visualization with Modules")
+        plt.axis("off")
+        st.pyplot(plt)
 
     # def visualize_network_with_modules(graph, module_attribute="module", selected_modules=None):
     #     """
