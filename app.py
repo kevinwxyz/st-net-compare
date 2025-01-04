@@ -58,11 +58,8 @@ def plot_positive_vs_negative_histogram(weights):
     fig, ax = plt.subplots(figsize=(8, 6))
     
     # Plot histograms with consistent bin width
-    ax.hist(negative_weights, bins=neg_bins, alpha=0.7, color='red', label="Negative Weights", density = True)
-    ax.hist(positive_weights, bins=pos_bins, alpha=0.7, color='green', label="Positive Weights", density = True)
-
-    # Add kernel density estimation
-    sns.kdeplot(weights, label="Weights KDE", ax=ax, linewidth=1.5)
+    ax.hist(negative_weights, bins=neg_bins, alpha=0.7, color='red', label="Negative Weights")
+    ax.hist(positive_weights, bins=pos_bins, alpha=0.7, color='green', label="Positive Weights")
     
     # Customize the plot
     ax.set_title("Positive vs Negative Edge Weight Distribution")
@@ -134,7 +131,7 @@ if uploaded_file_1 and uploaded_file_2:
     st.write("Network 2")
     st.pyplot(fig_deg_clust_2)
     
-    st.subheader("Positive vs Negative Edge Weight Distribution (Histogram with KDE)")
+    st.subheader("Positive vs Negative Edge Weight Distribution (Histogram)")
     fig_pos_neg_hist_1 = plot_positive_vs_negative_histogram(weights1)
     fig_pos_neg_hist_2 = plot_positive_vs_negative_histogram(weights2)
     st.write("Network 1")
