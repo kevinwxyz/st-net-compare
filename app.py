@@ -81,7 +81,7 @@ def plot_positive_vs_negative_histogram(weights):
     bin_width = total_range / num_bins
     
     # Create bin edges for negative and positive weights
-    neg_bins = list(np.arange(math.floor(min(weights)*40)/40 + bin_width, 0, bin_width))
+    neg_bins = list(np.arange(math.floor(min(weights)*40)/40, 0 + bin_width, bin_width))
     pos_bins = list(np.arange(0, math.ceil(max(weights)*40)/40 + bin_width, bin_width))
 
     fig, ax = plt.subplots(figsize=(8, 6))
