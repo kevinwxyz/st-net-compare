@@ -1,5 +1,6 @@
 streamlit
 networkx
+scipy
 pyvis
 numpy
 matplotlib
