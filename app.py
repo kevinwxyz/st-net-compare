@@ -106,7 +106,7 @@ if uploaded_file_1 and uploaded_file_2:
     # Display Metrics
     st.header("Network Metrics Comparison")
     metrics_df = pd.DataFrame([metrics1, metrics2], index=["Network 1", "Network 2"])
-    st.dataframe(metrics_df)
+    st.dataframe(metrics_df.T)
     
     # Generate Plots
     st.header("Plots")
