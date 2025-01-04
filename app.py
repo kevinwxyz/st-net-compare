@@ -3,6 +3,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
+import numpy as np
 from io import StringIO
 
 # Helper Function: Compute Network Metrics
@@ -50,8 +51,8 @@ def plot_positive_vs_negative_histogram(weights):
     bin_width = total_range / num_bins
     
     # Create bin edges for negative and positive weights
-    neg_bins = list(range(int(min(weights)), 0, int(bin_width)))
-    pos_bins = list(range(0, int(max(weights) + bin_width), int(bin_width)))
+    neg_bins = list(np.arange(min(weights), 0, bin_width))
+    pos_bins = list(np.arange(0, max(weights) + bin_width, bin_width))
 
     fig, ax = plt.subplots(figsize=(8, 6))
     
