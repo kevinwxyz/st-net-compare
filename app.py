@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import numpy as np
+import math
 from io import StringIO
 
 # Helper Function: Compute Network Metrics
@@ -40,19 +41,50 @@ def plot_degree_vs_clustering(degrees, clustering_coeffs):
     ax.set_ylabel("Clustering Coefficient")
     return fig
 
+# def plot_positive_vs_negative_histogram(weights):
+#     # Separate positive and negative weights
+#     positive_weights = [w for w in weights if w > 0]
+#     negative_weights = [w for w in weights if w < 0]
+
+#     # Calculate the bin width based on the full range of weights
+#     total_range = max(weights) - min(weights)
+#     num_bins = 20  # Desired number of bins
+#     bin_width = total_range / num_bins
+    
+#     # Create bin edges for negative and positive weights
+#     neg_bins = list(np.arange(min(weights), 0, bin_width))
+#     pos_bins = list(np.arange(0, max(weights) + bin_width, bin_width))
+
+#     fig, ax = plt.subplots(figsize=(8, 6))
+    
+#     # Plot histograms with consistent bin width
+#     ax.hist(negative_weights, bins=neg_bins, alpha=0.7, color='red', label="Negative Weights")
+#     ax.hist(positive_weights, bins=pos_bins, alpha=0.7, color='green', label="Positive Weights")
+    
+#     # Customize the plot
+#     ax.set_title("Positive vs Negative Edge Weight Distribution")
+#     ax.set_xlabel("Edge Weight")
+#     ax.set_ylabel("Count")
+#     ax.axvline(0, color="black", linestyle="--", linewidth=1)  # Add a vertical line at zero
+#     ax.legend()
+    
+#     return fig
+
 def plot_positive_vs_negative_histogram(weights):
     # Separate positive and negative weights
     positive_weights = [w for w in weights if w > 0]
     negative_weights = [w for w in weights if w < 0]
 
     # Calculate the bin width based on the full range of weights
-    total_range = max(weights) - min(weights)
-    num_bins = 20  # Desired number of bins
+    start = math.floor(min(weights))
+    end = math.ceil(max(weights))
+    total_range = end - start
+    num_bins = total_range * 40  # Desired number of bins
     bin_width = total_range / num_bins
     
     # Create bin edges for negative and positive weights
-    neg_bins = list(np.arange(min(weights), 0, bin_width))
-    pos_bins = list(np.arange(0, max(weights) + bin_width, bin_width))
+    neg_bins = list(np.arange(start, 0, bin_width))
+    pos_bins = list(np.arange(0, end + bin_width, bin_width))
 
     fig, ax = plt.subplots(figsize=(8, 6))
     
