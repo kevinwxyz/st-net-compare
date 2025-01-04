@@ -44,12 +44,20 @@ def plot_positive_vs_negative_histogram(weights):
     positive_weights = [w for w in weights if w > 0]
     negative_weights = [w for w in weights if w < 0]
 
+    # Calculate the bin width based on the full range of weights
+    total_range = max(weights) - min(weights)
+    num_bins = 20  # Desired number of bins
+    bin_width = total_range / num_bins
+    
+    # Create bin edges for negative and positive weights
+    neg_bins = list(range(int(min(weights)), 0, int(bin_width)))
+    pos_bins = list(range(0, int(max(weights) + bin_width), int(bin_width)))
+
     fig, ax = plt.subplots(figsize=(8, 6))
     
-    # Plot histograms on either side of 0
-    bins = 20
-    ax.hist(negative_weights, bins=bins, alpha=0.7, color='red', label="Negative Weights", range=(min(weights), 0))
-    ax.hist(positive_weights, bins=bins, alpha=0.7, color='green', label="Positive Weights", range=(0, max(weights)))
+    # Plot histograms with consistent bin width
+    ax.hist(negative_weights, bins=neg_bins, alpha=0.7, color='red', label="Negative Weights")
+    ax.hist(positive_weights, bins=pos_bins, alpha=0.7, color='green', label="Positive Weights")
     
     # Customize the plot
     ax.set_title("Positive vs Negative Edge Weight Distribution")
