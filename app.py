@@ -39,17 +39,25 @@ def plot_degree_vs_clustering(degrees, clustering_coeffs):
     ax.set_ylabel("Clustering Coefficient")
     return fig
 
-def plot_positive_vs_negative(weights):
+def plot_positive_vs_negative_histogram(weights):
+    # Separate positive and negative weights
     positive_weights = [w for w in weights if w > 0]
     negative_weights = [w for w in weights if w < 0]
+
+    fig, ax = plt.subplots(figsize=(8, 6))
     
-    fig, ax = plt.subplots()
-    sns.kdeplot(positive_weights, label="Positive Weights", color="green", ax=ax)
-    sns.kdeplot(negative_weights, label="Negative Weights", color="red", ax=ax)
+    # Plot histograms on either side of 0
+    bins = 20
+    ax.hist(negative_weights, bins=bins, alpha=0.7, color='red', label="Negative Weights", range=(min(weights), 0))
+    ax.hist(positive_weights, bins=bins, alpha=0.7, color='green', label="Positive Weights", range=(0, max(weights)))
+    
+    # Customize the plot
     ax.set_title("Positive vs Negative Edge Weight Distribution")
     ax.set_xlabel("Edge Weight")
-    ax.set_ylabel("Density")
+    ax.set_ylabel("Count")
+    ax.axvline(0, color="black", linestyle="--", linewidth=1)  # Add a vertical line at zero
     ax.legend()
+    
     return fig
 
 def plot_metric_distribution(degrees, weights):
@@ -113,13 +121,13 @@ if uploaded_file_1 and uploaded_file_2:
     st.write("Network 2")
     st.pyplot(fig_deg_clust_2)
     
-    st.subheader("Positive vs Negative Edge Weight Distribution")
-    fig_pos_neg_1 = plot_positive_vs_negative(weights1)
-    fig_pos_neg_2 = plot_positive_vs_negative(weights2)
+    st.subheader("Positive vs Negative Edge Weight Distribution (Histogram)")
+    fig_pos_neg_hist_1 = plot_positive_vs_negative_histogram(weights1)
+    fig_pos_neg_hist_2 = plot_positive_vs_negative_histogram(weights2)
     st.write("Network 1")
-    st.pyplot(fig_pos_neg_1)
+    st.pyplot(fig_pos_neg_hist_1)
     st.write("Network 2")
-    st.pyplot(fig_pos_neg_2)
+    st.pyplot(fig_pos_neg_hist_2)
     
     # # Communities visualization
     # st.subheader("Community Structure")
