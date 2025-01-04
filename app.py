@@ -184,42 +184,42 @@ if uploaded_file_1 and uploaded_file_2:
             })
         return metrics
     
-    # Function to visualize a network with modules
-    def visualize_network_with_modules(graph, communities, module_selection=None):
-        pos = nx.spring_layout(graph, seed=42)
-        colors = plt.cm.tab10.colors
-        color_mapping = {i: colors[i % len(colors)] for i in range(len(communities))}
+    # # Function to visualize a network with modules
+    # def visualize_network_with_modules(graph, communities, module_selection=None):
+    #     pos = nx.spring_layout(graph, seed=42)
+    #     colors = plt.cm.tab10.colors
+    #     color_mapping = {i: colors[i % len(colors)] for i in range(len(communities))}
     
-        plt.figure(figsize=(10, 7))
+    #     plt.figure(figsize=(10, 7))
 
-        # Keep track of selected nodes and valid edges
-        selected_nodes = set()
-        selected_edges = set()
+    #     # Keep track of selected nodes and valid edges
+    #     selected_nodes = set()
+    #     selected_edges = set()
     
-        for i, module in enumerate(communities):
-            if module_selection is None or i + 1 in module_selection:
-                selected_nodes.update(module)
-                nx.draw_networkx_nodes(
-                    graph,
-                    pos,
-                    nodelist=module,
-                    node_color=[color_mapping[i]],
-                    label=f"Module {i + 1}",
-                    node_size=50
-                )
-                # Filter edges to ensure they remain within the selected module
-                module_edges = [
-                    (u, v) for u, v in graph.edges(module) if u in module and v in module
-                ]
-                selected_edges.update(module_edges)
+    #     for i, module in enumerate(communities):
+    #         if module_selection is None or i + 1 in module_selection:
+    #             selected_nodes.update(module)
+    #             nx.draw_networkx_nodes(
+    #                 graph,
+    #                 pos,
+    #                 nodelist=module,
+    #                 node_color=[color_mapping[i]],
+    #                 label=f"Module {i + 1}",
+    #                 node_size=50
+    #             )
+    #             # Filter edges to ensure they remain within the selected module
+    #             module_edges = [
+    #                 (u, v) for u, v in graph.edges(module) if u in module and v in module
+    #             ]
+    #             selected_edges.update(module_edges)
     
-        # nx.draw_networkx_edges(graph, pos, alpha=0.5)
-        # Draw only the edges entirely within selected modules
-        nx.draw_networkx_edges(graph, pos, edgelist=list(selected_edges), alpha=0.5)
-        plt.legend(loc="best")
-        plt.title("Network Visualization with Modules")
-        plt.axis("off")
-        st.pyplot(plt)
+    #     # nx.draw_networkx_edges(graph, pos, alpha=0.5)
+    #     # Draw only the edges entirely within selected modules
+    #     nx.draw_networkx_edges(graph, pos, edgelist=list(selected_edges), alpha=0.5)
+    #     plt.legend(loc="best")
+    #     plt.title("Network Visualization with Modules")
+    #     plt.axis("off")
+    #     st.pyplot(plt)
 
     # def visualize_network_with_modules(graph, module_attribute="module", selected_modules=None):
     #     """
