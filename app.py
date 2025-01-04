@@ -47,13 +47,13 @@ def plot_positive_vs_negative_histogram(weights):
     negative_weights = [w for w in weights if w < 0]
 
     # Calculate the bin width based on the full range of weights
-    total_range = max(weights) - min(weights)
-    num_bins = 20  # Desired number of bins
+    total_range = math.ceil(max(weights)) - math.floor(min(weights))
+    num_bins = total_range * 40  # Desired number of bins
     bin_width = total_range / num_bins
     
     # Create bin edges for negative and positive weights
-    neg_bins = list(np.arange(min(weights), 0 + bin_width, bin_width))
-    pos_bins = list(np.arange(0, max(weights) + bin_width, bin_width))
+    neg_bins = list(np.arange(math.floor(min(weights)*40)/40, 0 + bin_width, bin_width))
+    pos_bins = list(np.arange(0, math.ceil(max(weights)*40)/40 + bin_width, bin_width))
 
     fig, ax = plt.subplots(figsize=(8, 6))
     
@@ -69,35 +69,6 @@ def plot_positive_vs_negative_histogram(weights):
     ax.legend()
     
     return fig
-
-# def plot_positive_vs_negative_histogram(weights):
-#     # Separate positive and negative weights
-#     positive_weights = [w for w in weights if w > 0]
-#     negative_weights = [w for w in weights if w < 0]
-
-#     # Calculate the bin width based on the full range of weights
-#     total_range = math.ceil(max(weights)) - math.floor(min(weights))
-#     num_bins = total_range * 40  # Desired number of bins
-#     bin_width = total_range / num_bins
-    
-#     # Create bin edges for negative and positive weights
-#     neg_bins = list(np.arange(math.floor(min(weights)*40)/40, 0 + bin_width, bin_width))
-#     pos_bins = list(np.arange(0, math.ceil(max(weights)*40)/40 + bin_width, bin_width))
-
-#     fig, ax = plt.subplots(figsize=(8, 6))
-    
-#     # Plot histograms with consistent bin width
-#     ax.hist(negative_weights, bins=neg_bins, alpha=0.7, color='red', label="Negative Weights")
-#     ax.hist(positive_weights, bins=pos_bins, alpha=0.7, color='green', label="Positive Weights")
-    
-#     # Customize the plot
-#     ax.set_title("Positive vs Negative Edge Weight Distribution")
-#     ax.set_xlabel("Edge Weight")
-#     ax.set_ylabel("Count")
-#     ax.axvline(0, color="black", linestyle="--", linewidth=1)  # Add a vertical line at zero
-#     ax.legend()
-    
-#     return fig
 
 def plot_metric_distribution(degrees, weights):
     # Degree Distribution Plot
