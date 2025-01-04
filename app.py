@@ -77,7 +77,7 @@ def plot_positive_vs_negative_histogram(weights):
 
     # Calculate the bin width based on the full range of weights
     total_range = math.ceil(max(weights)) - math.floor(min(weights))
-    num_bins = total_range * 40  # Desired number of bins
+    num_bins = total_range * 50  # Desired number of bins
     bin_width = total_range / num_bins
     
     # Create bin edges for negative and positive weights
