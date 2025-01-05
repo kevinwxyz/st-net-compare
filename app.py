@@ -39,6 +39,7 @@ def plot_degree_vs_clustering(degrees, clustering_coeffs, network_name):
     ax.set_title(f"{network_name}: Degree vs Clustering Coefficient")
     ax.set_xlabel("Degree")
     ax.set_ylabel("Clustering Coefficient")
+    ax.set_ylim(0,0.185)
     return fig
 
 def plot_positive_vs_negative_histogram(weights, network_name):
@@ -58,13 +59,13 @@ def plot_positive_vs_negative_histogram(weights, network_name):
     fig, ax = plt.subplots(figsize=(8, 6))
     
     # Plot histograms with consistent bin width
-    ax.hist(negative_weights, bins=neg_bins, alpha=0.7, color='red', label="Negative Weights")
-    ax.hist(positive_weights, bins=pos_bins, alpha=0.7, color='green', label="Positive Weights")
+    ax.hist(negative_weights, bins=neg_bins, alpha=0.7, color='red', label="Negative Associations")
+    ax.hist(positive_weights, bins=pos_bins, alpha=0.7, color='green', label="Positive Associations")
     ax.set_ylim(0,4500)
     
     # Customize the plot
-    ax.set_title(f"{network_name}: Positive vs Negative Edge Weight Distribution")
-    ax.set_xlabel("Edge Weight")
+    ax.set_title(f"{network_name}: Positive vs Negative Edge Associations Distribution")
+    ax.set_xlabel("Edge Association")
     ax.set_ylabel("Count")
     ax.axvline(0, color="black", linestyle="--", linewidth=1)  # Add a vertical line at zero
     ax.legend()
@@ -78,6 +79,7 @@ def plot_metric_distribution(degrees, weights, network_name):
     ax1.set_title(f"{network_name} Degree Distribution")
     ax1.set_xlabel("Degree")
     ax1.set_ylabel("Count")
+    ax1.set_ylim(0,225)
     
     # Edge Weight Distribution Plot
     fig2, ax2 = plt.subplots()
@@ -85,6 +87,7 @@ def plot_metric_distribution(degrees, weights, network_name):
     ax2.set_title(f"{network_name} Edge Weight Distribution")
     ax2.set_xlabel("Edge Weight")
     ax2.set_ylabel("Count")
+    ax2.set_ylim(0,13000)
     
     return fig1, fig2
 
