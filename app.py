@@ -70,18 +70,18 @@ def plot_positive_vs_negative_histogram(weights):
     
     return fig
 
-def plot_metric_distribution(degrees, weights):
+def plot_metric_distribution(degrees, weights, network_name):
     # Degree Distribution Plot
     fig1, ax1 = plt.subplots()
     sns.histplot(degrees, kde=True, bins=15, ax=ax1, color='skyblue')
-    ax1.set_title("Degree Distribution")
+    ax1.set_title(f"{network_name} Degree Distribution")
     ax1.set_xlabel("Degree")
     ax1.set_ylabel("Count")
     
     # Edge Weight Distribution Plot
     fig2, ax2 = plt.subplots()
     sns.histplot(weights, kde=True, bins=15, ax=ax2, color='lightcoral')
-    ax2.set_title("Edge Weight Distribution")
+    ax2.set_title(f"{network_name} Edge Weight Distribution")
     ax2.set_xlabel("Edge Weight")
     ax2.set_ylabel("Count")
     
@@ -112,8 +112,8 @@ if uploaded_file_1 and uploaded_file_2:
     st.header("Plots")
     
     st.subheader("Degree Distribution")
-    fig1a, fig2a = plot_metric_distribution(degrees1, weights1)
-    fig1b, fig2b = plot_metric_distribution(degrees2, weights2)
+    fig1a, fig2a = plot_metric_distribution(degrees1, weights1, "Pooled Network")
+    fig1b, fig2b = plot_metric_distribution(degrees2, weights2, "Unpooled Network")
     
     st.write("Network 1")
     st.pyplot(fig1a)
