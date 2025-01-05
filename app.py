@@ -33,15 +33,15 @@ def compute_metrics(G):
     return metrics, degrees, weights, clustering_coeffs, communities
 
 # Helper Functions: Plot Metrics
-def plot_degree_vs_clustering(degrees, clustering_coeffs):
+def plot_degree_vs_clustering(degrees, clustering_coeffs, network_name):
     fig, ax = plt.subplots()
     ax.scatter(degrees, clustering_coeffs.values(), color='blue', alpha=0.7)
-    ax.set_title("Degree vs Clustering Coefficient")
+    ax.set_title(f"{network_name}: Degree vs Clustering Coefficient")
     ax.set_xlabel("Degree")
     ax.set_ylabel("Clustering Coefficient")
     return fig
 
-def plot_positive_vs_negative_histogram(weights):
+def plot_positive_vs_negative_histogram(weights, network_name):
     # Separate positive and negative weights
     positive_weights = [w for w in weights if w > 0]
     negative_weights = [w for w in weights if w < 0]
@@ -62,7 +62,7 @@ def plot_positive_vs_negative_histogram(weights):
     ax.hist(positive_weights, bins=pos_bins, alpha=0.7, color='green', label="Positive Weights")
     
     # Customize the plot
-    ax.set_title("Positive vs Negative Edge Weight Distribution")
+    ax.set_title(f"{network_name}: Positive vs Negative Edge Weight Distribution")
     ax.set_xlabel("Edge Weight")
     ax.set_ylabel("Count")
     ax.axvline(0, color="black", linestyle="--", linewidth=1)  # Add a vertical line at zero
@@ -124,16 +124,16 @@ if uploaded_file_1 and uploaded_file_2:
     st.pyplot(fig2b)
     
     st.subheader("Degree vs Clustering Coefficient")
-    fig_deg_clust_1 = plot_degree_vs_clustering(degrees1, clustering_coeffs1)
-    fig_deg_clust_2 = plot_degree_vs_clustering(degrees2, clustering_coeffs2)
+    fig_deg_clust_1 = plot_degree_vs_clustering(degrees1, clustering_coeffs1, "Pooled Network")
+    fig_deg_clust_2 = plot_degree_vs_clustering(degrees2, clustering_coeffs2, "Unpooled Network")
     st.write("Network 1")
     st.pyplot(fig_deg_clust_1)
     st.write("Network 2")
     st.pyplot(fig_deg_clust_2)
     
     st.subheader("Positive vs Negative Edge Weight Distribution (Histogram)")
-    fig_pos_neg_hist_1 = plot_positive_vs_negative_histogram(weights1)
-    fig_pos_neg_hist_2 = plot_positive_vs_negative_histogram(weights2)
+    fig_pos_neg_hist_1 = plot_positive_vs_negative_histogram(weights1, "Pooled Network")
+    fig_pos_neg_hist_2 = plot_positive_vs_negative_histogram(weights2, "Unpooled Network")
     st.write("Network 1")
     st.pyplot(fig_pos_neg_hist_1)
     st.write("Network 2")
