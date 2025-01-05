@@ -60,7 +60,7 @@ def plot_positive_vs_negative_histogram(weights, network_name):
     # Plot histograms with consistent bin width
     ax.hist(negative_weights, bins=neg_bins, alpha=0.7, color='red', label="Negative Weights")
     ax.hist(positive_weights, bins=pos_bins, alpha=0.7, color='green', label="Positive Weights")
-    ax.ylim(0,4500)
+    ax.set_ylim(0,4500)
     
     # Customize the plot
     ax.set_title(f"{network_name}: Positive vs Negative Edge Weight Distribution")
