@@ -39,7 +39,7 @@ def plot_degree_vs_clustering(degrees, clustering_coeffs, network_name):
     ax.set_title(f"{network_name}: Degree vs Clustering Coefficient")
     ax.set_xlabel("Degree")
     ax.set_ylabel("Clustering Coefficient")
-    ax.set_ylim(0,0.185)
+    ax.set_ylim(-0.0025,0.2)
     return fig
 
 def plot_positive_vs_negative_histogram(weights, network_name):
@@ -79,7 +79,7 @@ def plot_metric_distribution(degrees, weights, network_name):
     ax1.set_title(f"{network_name} Degree Distribution")
     ax1.set_xlabel("Degree")
     ax1.set_ylabel("Count")
-    ax1.set_ylim(0,225)
+    ax1.set_ylim(-2,225)
     
     # Edge Weight Distribution Plot
     fig2, ax2 = plt.subplots()
@@ -87,7 +87,7 @@ def plot_metric_distribution(degrees, weights, network_name):
     ax2.set_title(f"{network_name} Edge Weight Distribution")
     ax2.set_xlabel("Edge Weight")
     ax2.set_ylabel("Count")
-    ax2.set_ylim(0,13000)
+    ax2.set_ylim(-50,13000)
     
     return fig1, fig2
 
