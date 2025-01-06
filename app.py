@@ -95,13 +95,27 @@ def plot_metric_distribution(degrees, weights, network_name):
 st.title("Network Comparison App")
 
 # Upload GraphML files
-uploaded_file_1 = st.file_uploader("Upload the first GraphML file", type=["graphml"])
-uploaded_file_2 = st.file_uploader("Upload the second GraphML file", type=["graphml"])
+uploaded_file_1 = st.file_uploader("Upload the first GraphML file (Association graph)", type=["graphml"])
+uploaded_file_2 = st.file_uploader("Upload the second GraphML file (Association graph)", type=["graphml"])
 
 if uploaded_file_1 and uploaded_file_2:
-    # Load the graphs
-    G1 = nx.read_graphml(uploaded_file_1)
-    G2 = nx.read_graphml(uploaded_file_2)
+    # Load the association graphs
+    G1_asso = nx.read_graphml(uploaded_file_1)
+    G2_asso = nx.read_graphml(uploaded_file_2)
+
+    # Generating similarity graph with non-negative edge weights
+    G1 = G1_asso
+    G2 = G2_asso
+    for u, v, data in G1.edges(data=True):
+        if "weight" in data:  # Check if the edge has a weight attribute
+            original_weight = float(data["weight"])
+            transformed_weight = 1 - math.sqrt(0.5 * (1 - original_weight))
+            data["weight"] = transformed_weight
+    for u, v, data in G2.edges(data=True):
+        if "weight" in data:  # Check if the edge has a weight attribute
+            original_weight = float(data["weight"])
+            transformed_weight = 1 - math.sqrt(0.5 * (1 - original_weight))
+            data["weight"] = transformed_weight
     
     # Compute metrics for both networks
     metrics1, degrees1, weights1, clustering_coeffs1, communities1 = compute_metrics(G1)
@@ -136,8 +150,10 @@ if uploaded_file_1 and uploaded_file_2:
     st.pyplot(fig_deg_clust_2)
     
     st.subheader("Positive vs Negative Edge Weight Distribution (Histogram)")
-    fig_pos_neg_hist_1 = plot_positive_vs_negative_histogram(weights1, "Pooled Network")
-    fig_pos_neg_hist_2 = plot_positive_vs_negative_histogram(weights2, "Unpooled Network")
+    weights1_asso = [attr['weight'] for _, _, attr in G1_asso.edges(data=True) if 'weight' in attr]
+    weights2_asso = [attr['weight'] for _, _, attr in G2_asso.edges(data=True) if 'weight' in attr]
+    fig_pos_neg_hist_1 = plot_positive_vs_negative_histogram(weights1_asso, "Pooled Network")
+    fig_pos_neg_hist_2 = plot_positive_vs_negative_histogram(weights2_asso, "Unpooled Network")
     st.write("Network 1")
     st.pyplot(fig_pos_neg_hist_1)
     st.write("Network 2")
