@@ -104,8 +104,8 @@ if uploaded_file_1 and uploaded_file_2:
     G2_asso = nx.read_graphml(uploaded_file_2)
 
     # Generating similarity graph with non-negative edge weights
-    G1 = G1_asso
-    G2 = G2_asso
+    G1 = G1_asso.copy()
+    G2 = G2_asso.copy()
     for u, v, data in G1.edges(data=True):
         if "weight" in data:  # Check if the edge has a weight attribute
             original_weight = float(data["weight"])
