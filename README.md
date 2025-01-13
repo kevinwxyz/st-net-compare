@@ -2,7 +2,7 @@
 
 ## Objective
 
-To compare biologically relevant co-occurrence network properties between two graphs using NetworkX in python, which aids traditional properties and plots produced via NetCoMi in R.
+To compare biologically relevant co-occurrence network properties and plots between two graphs using NetworkX in python.
 
 Link to webapp: [Network Comparison App](https://st-net-compare.streamlit.app/)
 
