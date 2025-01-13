@@ -149,7 +149,7 @@ if uploaded_file_1 and uploaded_file_2:
     st.write("Network 2")
     st.pyplot(fig_deg_clust_2)
     
-    st.subheader("Positive vs Negative Edge Weight Distribution (Histogram)")
+    st.subheader("Positive vs Negative Edge Associations Distribution (Histogram)")
     weights1_asso = [attr['weight'] for _, _, attr in G1_asso.edges(data=True) if 'weight' in attr]
     weights2_asso = [attr['weight'] for _, _, attr in G2_asso.edges(data=True) if 'weight' in attr]
     fig_pos_neg_hist_1 = plot_positive_vs_negative_histogram(weights1_asso, "Pooled Network")
