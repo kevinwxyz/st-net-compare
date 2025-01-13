@@ -10,7 +10,7 @@ Link to webapp: [Network Comparison App](https://st-net-compare.streamlit.app/)
 
 Users are guided to upload two association graphs, first for the pooled samples network and next for the unpooled samples network, as GraphML files
 
-## Network Properties Comparison:
+## Network Properties Comparison
 
 Users receive a comparison of global network properties of the two networks, namely a comparison of the number of nodes, number of edges, density, global clustering coefficient, modularity, average degree, average edge weight.
 
