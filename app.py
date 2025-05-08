@@ -95,8 +95,8 @@ def plot_metric_distribution(degrees, weights, network_name):
 st.title("Network Comparison App")
 
 # Upload GraphML files
-uploaded_file_1 = st.file_uploader("Upload the first GraphML file (Association graph)", type=["graphml"])
-uploaded_file_2 = st.file_uploader("Upload the second GraphML file (Association graph)", type=["graphml"])
+uploaded_file_1 = st.file_uploader("Upload the first GraphML file (Association graph for pooled network)", type=["graphml"])
+uploaded_file_2 = st.file_uploader("Upload the second GraphML file (Association graph for unpooled network)", type=["graphml"])
 
 if uploaded_file_1 and uploaded_file_2:
     # Load the association graphs
