@@ -20,5 +20,6 @@ Module statistics for the modules found by the Clauset-Newman-Moore greedy modul
 
 ## Saving plots and tables
 
-- To download tables as CSVs, users can click the "Download as CSV" option which shows in the top right corner of the table when hovering anywhere over the table. 
-- Plots too can be saved by right-clicking the image and choosing the "Save image as..." option.
+To download tables as CSVs, users can click the "Download as CSV" option which shows in the top right corner of the table when hovering anywhere over the table. 
+
+Plots too can be saved by right-clicking the image and choosing the "Save image as..." option.
